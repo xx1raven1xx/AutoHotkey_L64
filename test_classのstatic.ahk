@@ -5,29 +5,24 @@ URL https://github.com/take-takashi
 Main()
 return
 /*
-classのテスト
-オーバーロードはできない
-オーバーライドはできる
+classのstatic
 */
 Main(){
   point1 := new Point(1, 2)
-  point1.say()
-  point1.setY(6)
-  point1.say()
-  
-  point2 := new Point3D(3, 4, 5)
-  point2.say()
-  point2.setY(7)
-  point2.say()
-  point2.setZ("aa")
-  point2["say"]() ; これも使える
-  MsgBox % point2.x ; これも使える。が、private的に考えると使うべきではない。
+  MsgBox % point1.getCount()
+  point2 := new Point(3, 4)
+  MsgBox % point1.getCount() ", " point2.getCount() ", " Point.Count ", " Point.getCount() ; 全部使える
+  MsgBox % Point3D.getCount() ", " Point3D.Count ; 継承もされる
 }
 
 class Point{
+  static Count := 0
+  instance := 0
   __New(_x, _y){ ; constructor
     this.x := _x
     this.y := _y
+    
+    Point.Count += 1 ; static
   }
   
   say(){
@@ -52,11 +47,9 @@ class Point{
     else
       MsgBox % _num " is not number."
   }
-  
-  ; error overload
-  ;say(_int){
-    ;MsgBox % x, y
-  ;}
+  getCount(){
+    return Point.Count ; static
+  }
 }
 
 class Point3D extends Point{
