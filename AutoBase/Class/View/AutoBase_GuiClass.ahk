@@ -12,19 +12,14 @@ class AutoBase_GuiClass{
     _windowEdgeX := DllCall("GetSystemMetrics", UInt,45, UInt) ; SM_CXEDGE
     this.setScrollWidth(_scrollWidth)
     this.setWindowEdgeX(_windowEdgeX)
-    ;TODO inifile
-    this.setWidth(500)
-    this.setHeight(300)
-    this.setFontColor("FFFFFF")
-    this.setBackgroundColor("313131")
-    this.makeGui()
   }
   
-  makeGui(){
+  makeGui(_GuiSettingClass){
     Global AUTOBASE_Gui_Edit
     Global AUTOBASE_Gui_ListView
     Global AUTOBASE_Gui_Text
     _hwnd := _pid := _height := _textY := _posEdit := _posText := 0
+    this.applySetting(_GuiSettingClass) ; 設定の適用
     _w           := this.getWidth()
     _h           := this.getHeight()
     _fc          := this.getFontColor()
@@ -51,6 +46,13 @@ class AutoBase_GuiClass{
     this.setHwnd(_hwnd)
     WinGet, _pid, PID, ahk_id %_hwnd%
     this.setPid(_pid)
+  }
+  
+  applySetting(_GuiSettingClass){
+    this.setWidth(_GuiSettingClass.getWidth())
+    this.setHeight(_GuiSettingClass.getHeight())
+    this.setFontColor(_GuiSettingClass.getFontColor())
+    this.setBackgroundColor(_GuiSettingClass.getBackgroundColor())
   }
   
   getWidth(){
