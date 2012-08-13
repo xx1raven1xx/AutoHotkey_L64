@@ -15,5 +15,6 @@ class AutoBase_TestPluginClass extends PluginIF{
                           , displayText: this.__Class " " A_Index
                           , searchText:  this.__Class " " A_Index})
     }
+    
   }
 }

@@ -9,9 +9,27 @@ class AutoBase_Class{
   
   __New(){
     _OperationClass := new AutoBase_OperationClass()
+    this.setOperationClass(_OperationClass)
   }
   
-  init(){
-    
+  ; from global
+  ; to operation
+  search(){
+    GuiControlGet, _edit,, AUTOBASE_Gui_Edit
+    this.getOperationClass().search(_edit)
+  }
+  
+  ; from global
+  ; to operation
+  keyEvent(_keyString){
+    this.getOperationClass().keyEvent(_keyString)
+  }
+  
+  ;*** getter setter ***;
+  getOperationClass(){
+    return this.__local__.OperationClass
+  }
+  setOperationClass(_OperationClass){
+    return this.__local__.OperationClass := _OperationClass
   }
 }

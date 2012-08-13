@@ -24,21 +24,32 @@ class AutoBase_OperationClass{
   
   start(){
     this.getModelClass().loadAndMakeGui()
-    this.getModelClass().loadPlugins() ; TODO
+    this.getModelClass().loadPlugins()
+    this.search("")
   }
   
+  ; from class
+  ; to model
+  search(_searchString){
+    this.getModelClass().search(_searchString)
+  }
+  
+  ; from class
+  ; to Model
+  keyEvent(_keyString){
+    this.getModelClass().keyEvent(_keyString)
+  }
+  
+  ;*** getter setter ***;
   getModelClass(){
     return this.__local__.ModelClass
   }
-  
   setModelClass(_ModelClass){
     return this.__local__.ModelClass := _ModelClass
   }
-  
   getViewClass(){
     return this.__local__.ViewClass
   }
-  
   setViewClass(_ViewClass){
     return this.__local__.ViewClass := _ViewClass
   }

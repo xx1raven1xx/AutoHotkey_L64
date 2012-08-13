@@ -8,7 +8,7 @@ class AutoBase_ModelClass{
   __local__ := Object()
   
   __New(){
-    this.setIniFile(new File("AutoBase.ini"))
+    this.setIniFile(new FileClass("AutoBase.ini"))
     _plugin := new PluginIF()
     _plugin.__init() ; PluginIFの初期化
   }
@@ -18,13 +18,16 @@ class AutoBase_ModelClass{
     this.setGuiSettingClass(new AutoBase_GuiSettingClass(this))
     this.setLoadPluginClass(new AutoBase_LoadPluginClass(this.getIniFile().getFilePath()))
     this.setPluginsClass(new AutoBase_PluginsClass(this))
-    this.setListViewClass(new AutoBase_ListViewClass())
+    this.setListViewClass(new AutoBase_ListViewClass(this))
+    this.setSearchClass(new AutoBase_SearchClass(this.getIniFile().getFilePath()))
+    this.setKeyClass(new AutoBase_KeyClass(this))
     
     this.start()
   }
   
   start(){
     this.getLoadPluginClass().init(this.getPluginsClass())
+    this.getSearchClass().init(this.getListViewClass())
   }
   
   ; from operation
@@ -43,6 +46,36 @@ class AutoBase_ModelClass{
   ; to loadPlugin
   loadPlugins(){
     this.getLoadPluginClass().loadPlugins()
+  }
+  
+  ; from operation
+  ; to search
+  search(_searchString){
+    this.getSearchClass().search(_searchString)
+  }
+  
+  ; from ListView
+  ; to ViewClass
+  registerListView(_Array){
+    this.getViewClass().registerListView(_Array)
+  }
+  
+  ; from Operation
+  ; to KeyClass
+  keyEvent(_keyString){
+    this.getKeyClass().keyEvent(_keyString)
+  }
+  
+  ; from KeyClass
+  ; to ViewClass
+  moveListViewEvent(_direction, _repeatOn=0){
+    this.getViewClass().moveListViewEvent(_direction, _repeatOn)
+  }
+  
+  ; from KeyClass
+  ; to ViewClass
+  sendListViewKeyEvent(_event){
+    this.getViewClass().sendListViewKeyEvent(_event)
   }
   
   ;*** getter setter ***;
@@ -81,5 +114,17 @@ class AutoBase_ModelClass{
   }
   setListViewClass(_ListViewClass){
     return this.__local__.ListViewClass := _ListViewClass
+  }
+  getSearchClass(){
+    return this.__local__.SearchClass
+  }
+  setSearchClass(_SearchClass){
+    return this.__local__.SearchClass := _SearchClass
+  }
+  getKeyClass(){
+    return this.__local__.KeyClass
+  }
+  setKeyClass(_Class){
+    return this.__local__.KeyClass := _Class
   }
 }

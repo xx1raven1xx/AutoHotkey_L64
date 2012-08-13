@@ -8,8 +8,7 @@ class AutoBase_ViewClass{
   __local__ := Object()
   
   __New(){
-    _GuiClass := new AutoBase_GuiClass()
-    this.setGuiClass(_GuiClass)
+    this.setGuiClass(new AutoBase_GuiClass())
   }
   
   init(_OperationClass){
@@ -22,18 +21,34 @@ class AutoBase_ViewClass{
     this.getGuiClass().makeGui(_GuiSettingClass)
   }
   
+  ; from ModelClass
+  ; to Gui
+  registerListView(_Array){
+    this.getGuiClass().registerListView(_Array)
+  }
+  
+  ; from ModelClass
+  ; to GuiClass
+  moveListViewEvent(_direction="", _repeatOn=0){
+    this.getGuiClass().moveListViewEvent(_direction, _repeatOn)
+  }
+  
+  ; from ModelClass
+  ; to GuiClass
+  sendListViewKeyEvent(_event){
+    this.getGuiClass().sendListViewKeyEvent(_event)
+  }
+  
+  ;*** getter setter ***;
   getOperationClass(){
     return this.__local__.OperationClass
   }
-  
   setOperationClass(_OperationClass){
     return this.__local__.OperationClass := _OperationClass
   }
-  
   getGuiClass(){
     return this.__local__.GuiClass
   }
-  
   setGuiClass(_GuiClass){
     return this.__local__.GuiClass := _GuiClass
   }

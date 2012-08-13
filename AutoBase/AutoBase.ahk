@@ -28,6 +28,7 @@ return
 #include Class\Model\AutoBase_LoadPluginClass.ahk
 #include Class\Model\AutoBase_ModelClass.ahk
 #include Class\Model\AutoBase_PluginsClass.ahk
+#include Class\Model\AutoBase_SearchClass.ahk
 
 ; operation
 #include Class\Operation\AutoBase_OperationClass.ahk

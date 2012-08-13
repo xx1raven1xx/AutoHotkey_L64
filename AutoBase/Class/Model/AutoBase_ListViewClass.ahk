@@ -7,19 +7,62 @@ return
 class AutoBase_ListViewClass{
   __local__ := Object()
   
-  __New(){
+  __New(_ModelClass){
+    this.setModelClass(_ModelClass)
     this.setNormalList(new AutoBase_ModeListClass())
     this.setCommandList(new AutoBase_ModeListClass())
     this.setMenuList(new AutoBase_ModeListClass())
   }
   
+  ; from PluginsClass
+  ; to ModeListClass
   addPlugin(_Plugin){
     this.getNormalList().addPlugin(_Plugin, _Plugin.getNormalList())
     this.getCommandList().addPlugin(_Plugin, _Plugin.getCommandList())
     ; TODO Menuはどうする？
   }
   
+  ; from search
+  ; to model
+  ; mode 0 normal
+  ; mode 1 command
+  search(_mode, _patternsArray){
+    _targetList := this.getNormalList()
+    _flg_last := _ret := 0
+    
+    if(this.getIsMenuMode()){
+      ; menu mode
+      _targetList := this.getMenuList()
+    }else if(_mode = 1){
+      _targetList := this.getCommandList()
+    }
+    
+    _Array := _targetList.search(_patternsArray[1])
+    
+    Loop, % _patternsArray.MaxIndex()-1
+    {
+      B_Index := A_Index - 1
+      _NewArray := Array()
+      Loop, % _Array.MaxIndex()
+      {
+        _ret := RegExMatch(_Array[A_Index].getSearchText(), _patternsArray[B_Index])
+        if(_ret){
+          _NewArray.Insert(_Array[A_Index])
+        }
+      }
+      _Array := _NewArray
+    }
+    
+    this.getModelClass().registerListView(_Array)
+  }
+  
   ;*** getter setter ***;
+  getModelClass(){
+    return this.__local__.ModelClass
+  }
+  setModelClass(_ModelClass){
+    return this.__local__.ModelClass := _ModelClass
+  }
   getNormalList(){
     return this.__local__.normalList
   }
@@ -47,6 +90,15 @@ class AutoBase_ListViewClass{
     }
     Throw, % "_ModeListClass don't extends AutoBase_ModeListClass"
   }
+  getIsMenuMode(){
+    return this.__local__.isMenuMode
+  }
+  setIsMenuMode(_bool){
+    if(IsBoolean(_bool)){
+      return this.__local__.isMenuMode := _bool
+    }
+    Throw, % _bool " is not boolean"
+  }
 }
 
 /*
@@ -64,9 +116,35 @@ class AutoBase_ModeListClass{
     this.setPluginIndexArray(Array()) ; PluginをIndexごとに整列させるときに使う
   }
   
+  ; from ListViewClass
   addPlugin(_Plugin, _ListPtr){
-    this.getPluginArray().Insert(_ListPtr) ; Listのポインタと結びつける
+    this.getPluginArray()[_Plugin.__Class] := _ListPtr ; Listのポインタと結びつける
     this.getPluginIndexArray().Insert(_Plugin.__Class) ; _Pluginの名前をIndexに登録
+  }
+  
+  removePlugin(_pluginName){
+    ; TODO
+  }
+  
+  ;TODO
+  ; 検索ついでに一次元配列にする
+  search(_pattern){
+    _Array := Array()
+    
+    Loop, % this.getPluginIndexArray().MaxIndex()
+    {
+      _pluginName  := this.getPluginIndexArray()[A_Index]
+      _pluginArray := this.getPluginArray()[_pluginName]
+      Loop, % _pluginArray.MaxIndex()
+      {
+        _ret := RegExMatch(_pluginArray[A_Index].getSearchText(), _pattern)
+        if(_ret){
+          ; hit
+          _Array.Insert(_pluginArray[A_Index])
+        }
+      }
+    }
+    return _Array
   }
   
   ;*** getter setter ***;

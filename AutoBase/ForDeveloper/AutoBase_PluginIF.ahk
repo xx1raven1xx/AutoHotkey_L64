@@ -130,7 +130,7 @@ class PluginIF extends AutoBase_PluginIF{
   }
   
   addList(_List, _listClass){
-    if(IsObject(_List) = 0 ||  _listClass = ""){
+    if(IsObject(_List) = 0 || _listClass = ""){
       return
     }
     _List.Insert(_listClass)
@@ -161,7 +161,7 @@ class PluginIF extends AutoBase_PluginIF{
   }
   setNormalList(_Array){
     if(IsObject(_Array)){
-      return this.__local__.normalList
+      return this.__local__.normalList := _Array
     }
     Throw, % "_Array is not Array(Object)"
   }
@@ -170,7 +170,7 @@ class PluginIF extends AutoBase_PluginIF{
   }
   setCommandList(_Array){
     if(IsObject(_Array)){
-      return this.__local__.commandList
+      return this.__local__.commandList := _Array
     }
     Throw, % "_Array is not Array(Object)"
   }
@@ -179,7 +179,7 @@ class PluginIF extends AutoBase_PluginIF{
   }
   setMenuList(_Array){
     if(IsObject(_Array)){
-      return this.__local__.menuList
+      return this.__local__.menuList := _Array
     }
     Throw, % "_Array is not Array(Object)"
   }

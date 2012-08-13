@@ -15,7 +15,6 @@ class AutoBase_PluginsClass{
   addPlugin(_PluginString){
     _Plugin := new %_PluginString%()
     if(IsExtends(_Plugin, AutoBase_PluginIF)){
-      ; TODO
       this.getModelClass().getListViewClass().addPlugin(_Plugin)
       this.getPlugins().Insert(_Plugin)
     }

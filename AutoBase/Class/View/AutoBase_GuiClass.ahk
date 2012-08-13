@@ -12,6 +12,7 @@ class AutoBase_GuiClass{
     _windowEdgeX := DllCall("GetSystemMetrics", UInt,45, UInt) ; SM_CXEDGE
     this.setScrollWidth(_scrollWidth)
     this.setWindowEdgeX(_windowEdgeX)
+    this.setListViewClassArray(Array())
   }
   
   makeGui(_GuiSettingClass){
@@ -55,6 +56,83 @@ class AutoBase_GuiClass{
     this.setBackgroundColor(_GuiSettingClass.getBackgroundColor())
   }
   
+  ; from ViewClass
+  registerListView(_Array){
+    ; _Array[] is ListClass from AutoBase_ListViewClass.ahk
+    this.setListViewClassArray(_Array)
+    GuiControl, -Redraw, AUTOBASE_Gui_ListView
+    LV_Delete()
+    Loop, % _Array._MaxIndex()
+    {
+      _ListViewClass := _Array[A_Index]
+      LV_Add("Icon" . _ListViewClass.getIcon(), _ListViewClass.getDisplayText())
+    }
+    GuiControl, +Redraw, AUTOBASE_Gui_ListView
+    this.moveListView(1)
+  }
+  
+  ; from ViewClass
+  moveListViewEvent(_direction="", _repeatOn=0){
+    _d             := _direction
+    _content       := LV_GetNext()
+    _listViewCount := LV_GetCount()
+    if(_d = ""){
+    }else if(_d = "up" || _d = "up"){
+      if(_content = ){
+        _content := 1
+      }else{
+        _content -= 1
+        if(_content = 0){
+          if(_repeatOn = 1){
+            ; リピート時は停止
+            _content := 1
+          }else{
+            _content := _listViewCount
+          }
+        }
+      }
+    }else if(_d = "down" || _d = "d"){
+      if(_content = ){
+        _content := 1
+      }else{
+        _content += 1
+        if(_content = (_listViewCount+1)){
+          if(_repeatOn = 1){
+            _content := _listViewCount
+          }else{
+            _content := 1
+          }
+        }
+      }
+    }else{
+      ; 数値入力
+      _int := Ceil(_d)
+      if(_int < 1){
+        _int := 1
+      }else if(_listViewCount < _int){
+        _int := _listViewCount
+      }
+      _content := _int
+    }
+    
+    LV_Modify(_content, "Select Vis")
+  }
+  
+  ; from ViewClass
+  ; TODO このままだとmodeが変更できない
+  sendListViewKeyEvent(_event){
+    if(_event = "enter"){
+      _index   := LV_GetNext()
+      _ListClass := this.getListView()[_index]
+      this.getListPlugin().setMode("normal") ; モードを戻す
+      this.search("")
+    }else if(_event = "escape"){
+      this.getListPlugin().setMode("normal") ; モードを戻す
+      this.search("")
+    }
+  }
+  
+  ;*** getter setter ***;
   getWidth(){
     return this.__local__.width
   }
@@ -127,8 +205,15 @@ class AutoBase_GuiClass{
     }
     Throw, % _uint " is not UInteger."
   }
+  getListViewClassArray(){
+    return this.__local__.ListViewClassArray
+  }
+  setListViewClassArray(_Array){
+    return this.__local__.ListViewClassArray := _Array
+  }
 }
 
 ;*** Label ***;
 AUTOBASE_Gui_Edit_Change:
+  AUOTOBASE.search()
   return
