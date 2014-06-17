@@ -1,23 +1,31 @@
-/*
+﻿/*
 Autohor TAKE Takashi
 URL https://github.com/take-takashi
 */
 return
 
 #include <IsBoolean>
-
+/*
+    @1  file path
+    @2  AnyDrive機能を使うかどうか(0:使わない, !0:使う)
+*/
 class FileClass{
   __local__ := object()
   
   __New(_Params*){
+    this.setIsAnyDrive(_Params.2)
     if(_Params.1){
-      this.setParam(_Params.1)
+      this.constructor(_Params.1)
+    }
+  }
+
+  constructor(_filePath){
+      this.setParam(_filePath)
       this.setIsNetworkDrive(0)
       this.setIsDir(0)
       this.setIsDrive(0)
       
-      this.makePath(_Params.1)
-    }
+      this.makePath(_filePath)
   }
   
   makePath(_filePath){
@@ -98,6 +106,14 @@ class FileClass{
     if(this.getIsDir() != 1){
       StringTrimRight, _tempPath, _tempPath, 1
     }
+
+    ; _tempPath でファイルパスが完成
+    ; AnyDrive
+    if(this.getIsAnyDrive()){
+        
+    }
+
+
     SplitPath, _tempPath, _outFileName, _outDir, _outExt, _outNameNoExt, _outDrive
     this.setFullPath(_tempPath)
     this.setDirPath(_outDir)
@@ -138,7 +154,15 @@ class FileClass{
   }
   
   ;*** getter setter ***;
-  
+  getIsAnyDrive(){
+    return this.__local__.isAnyDrive
+  }
+  setIsAnyDrive(_bool=0){
+    if(_bool = 0)
+        return this.__local__.isAnyDrive := _bool
+    else
+        return this.__local__.isAnyDrive := 1
+  }
   getFullPath(){
     return this.__local__.fullPath
   }

@@ -7,34 +7,63 @@ URL https://github.com/take-takashi
 
 OutputDebug, % "app_MoveFiles.ahk run"
 
-; TODO exe "path" "path" [ /m /c /h /o /i /s "-" ]
+Loop, %0%
+{
+  param := %A_Index%
+  if(param = "/help"){
+    MsgBox, % helpMessage()
+    ExitApp
+  }
+  if(A_Index = 1 || A_Index = 2){
+    Continue
+  }
+  if(param = "/m"){
+    mode := "move"
+  }else if(param = "/c"){
+    mode := "copy"
+  }else if(param = "/h"){
+    isOW := "md5"
+  }else if(param = "/o"){
+    isOW := "overwrite"
+  }else if(param = "/i"){
+    isOW := "ignore"
+  }else if(param = "/s"){
+    index := A_Index + 1
+    sameFileNameChar := Trim(%index%, """'")
+  }
+}
 
-sourceDirPath = %1%
+sourcePattern = %1%
 destDirPath  = %2%
-mode = %3%
-isOW = %4% 
+if(sourcePattern = "" || destDirPath = ""){
+  MsgBox, % "param error"
+  ExitApp
+}
+;mode = %3%
+;isOW = %4% 
 ; 0 = すでにそのファイル名が存在していた場合、ハッシュチェックで同一ファイルかどうかチェックし、違うファイルならば別名で保存する(default)
 ; 1 = すでにそのファイル名が存在していた場合、同一ファイルかチェックを行わずに上書きする
 ; 2 = すでにそのファイル名が存在していた場合、同一ファイルかチェックを行わずにCopy（or Move）を中止する
-sameFileNameChar = %5%
+;sameFileNameChar = %5%
 ; isOWが0のときでファイル名を変更する際のファイル名に付ける装飾名(うまく説明できない)
 ; ex) 「-」ならば、ファイル名-1.exe といった感じに「-」+数字が新しいファイル名となる。（default 「-」）
 ; ただし、ファイル名に使えない文字列は使ってはいけない
 
 isOW := (isOW) ? isOW : 0
 sameFileNameChar := (sameFileNameChar) ? sameFileNameChar : "-"
-sendString := sourceDirPath destDirPath mode isOW sameFileNameChar
+sendString := sourcePattern destDirPath mode isOW sameFileNameChar
 if(IsInString(sendString, "|")){
   ; もし「|」がどれかに含まれていた場合は綺麗に分割できないため失敗
   Throw, % "パラメータに「|」が含まれている"
 }
-sendString := sourceDirPath "|" destDirPath "|" mode "|" isOW "|" sameFileNameChar
+sendString := sourcePattern "|" destDirPath "|" mode "|" isOW "|" sameFileNameChar
+OutputDebug, % "param [" sendString "]"
 checkAndSendMsgExistThisScriptInProcess(sendString)
 ; もし、すでにこのスクリプトが動いていたらここでExitApp
 
 Global_StringArray := Array() ; FIFO
 GC := new GlobalClass()
-MF := new MoveFilesClass(GC, sourceDirPath, destDirPath, mode, isOW, sameFileNameChar)
+MF := new MoveFilesClass(GC, sourcePattern, destDirPath, mode, isOW, sameFileNameChar)
 return
 
 #include .\Lib\FileClass.ahk
@@ -51,10 +80,10 @@ BatchArrayをグローバルに
 class MoveFilesClass{
   __local__ := Object()
   
-  __New(_GC, _sourceDirPath, _destDirPath, _mode, _isOW, _sameFileNameChar){
+  __New(_GC, _sourcePattern, _destDirPath, _mode, _isOW, _sameFileNameChar){
     this.setGlobalClass(_GC)
-    this.getGlobalClass().queueBatch(queueBatch(_sourceDirPath, _destDirPath, _mode, _isOW, _sameFileNameChar))
-    ;this.queueBatch(_sourceDirPath, _destDirPath, _mode, _isOW, _sameFileNameChar)
+    this.getGlobalClass().queueBatch(queueBatch(_sourcePattern, _destDirPath, _mode, _isOW, _sameFileNameChar))
+    ;this.queueBatch(_sourcePattern, _destDirPath, _mode, _isOW, _sameFileNameChar)
     this.startBatch()
   }
   
@@ -413,7 +442,7 @@ return
 
 queueBatch(_Params*){
   if(_Params.MaxIndex() = 5){
-    _sourceDirPath    := _Params[1]
+    _sourcePattern    := _Params[1]
     _destDirPath      := _Params[2]
     _mode             := _Params[3]
     _isOW             := _Params[4]
@@ -421,7 +450,7 @@ queueBatch(_Params*){
   }else if(_Params.MaxIndex() = 1){
     _string := _Params[1]
     StringSplit, _$, _string, |
-    _sourceDirPath    := _$1
+    _sourcePattern    := _$1
     _destDirPath      := _$2
     _mode             := _$3
     _isOW             := _$4
@@ -429,5 +458,14 @@ queueBatch(_Params*){
   }else{
     Throw, % _Params.MaxIndex()
   }
-  return new MF_Batch(_sourceDirPath, _destDirPath, _mode, _isOW, _sameFileNameChar)
+  return new MF_Batch(_sourcePattern, _destDirPath, _mode, _isOW, _sameFileNameChar)
+}
+
+helpMessage(){
+  _s := "HELP`n`n"
+  _s .= A_ScriptName """sourcePattern"" ""destDirPath"" [/m /c] [/h /o /i] [/s ""char""]`n"
+  _s .= "/m = move, /c = copy`n"
+  _s .= "/h = hash check, /o = overwrite, /i = ignore`n"
+  _s .= "/s = when same file name but difference file, use file name sign. (ex.  ""samefile-1.jpg"" use ""-"")"
+  return _s
 }

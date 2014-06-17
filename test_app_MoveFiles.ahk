@@ -30,6 +30,11 @@ Main(){
   ;Run, %_ahk% %A_ScriptDir%\app_MoveFiles.ahk %_sourcePattern% %_destDir% %_mode% %_isOW% %_char%, %A_ScriptDir%
   
   ;Sleep, 10000
-  FileCopy, %_testDir%\pink.bmp, %_sourceDir%\color2.bmp
-  Run, %_ahk% %A_ScriptDir%\app_MoveFiles.ahk %_sourcePattern% %_destDir% %_mode% %_isOW% %_char%, %A_ScriptDir%
+  ;FileCopy, %_testDir%\pink.bmp, %_sourceDir%\color2.bmp
+  ;Run, %_ahk% %A_ScriptDir%\app_MoveFiles.ahk %_sourcePattern% %_destDir% %_mode% %_isOW% %_char%, %A_ScriptDir%
+  
+  ;FileCopy, %_testDir%\pink.bmp, %_sourceDir%\color2.bmp
+  ;Run, %_ahk% %A_ScriptDir%\app_MoveFiles.ahk %_sourcePattern% %_destDir% /m /h /s "-", %A_ScriptDir%
+  
+  Run, %_ahk% %A_ScriptDir%\app_MoveFiles.ahk /help, %A_ScriptDir%
 }
