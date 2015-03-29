@@ -1,0 +1,32 @@
+﻿/*
+Autohor TAKE Takashi
+URL https://github.com/take-takashi
+*/
+
+/*
+this.baseの中身の調査
+*/
+tc := new TC()
+
+
+
+return
+
+class TC
+{
+  __local__ := Object()
+  
+  __New()
+  {
+    
+    for _index, _param in this.base
+    {
+      MsgBox, key = %_index% val = %_param%
+    }
+  }
+  
+  __Set()
+  {
+  }
+  
+}

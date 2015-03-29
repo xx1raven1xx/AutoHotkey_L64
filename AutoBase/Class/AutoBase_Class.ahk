@@ -25,6 +25,10 @@ class AutoBase_Class{
     this.getOperationClass().keyEvent(_keyString)
   }
   
+  getHwnd(){
+    return this.getOperationClass().getViewClass().getGuiClass().getHwnd()
+  }
+    
   ;*** getter setter ***;
   getOperationClass(){
     return this.__local__.OperationClass

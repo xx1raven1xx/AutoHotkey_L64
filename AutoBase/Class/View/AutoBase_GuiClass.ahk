@@ -119,11 +119,11 @@ class AutoBase_GuiClass{
   }
   
   ; from ViewClass
-  ; TODO このままだとmodeが変更できない
+  ; TODO このままだとmodeが変更できない-> Editの中身をカラにすればよい？
   sendListViewKeyEvent(_event){
     if(_event = "enter"){
       _index   := LV_GetNext()
-      _ListClass := this.getListView()[_index]
+      _ListClass := this.getListViewClassArray()[_index]
       this.getListPlugin().setMode("normal") ; モードを戻す
       this.search("")
     }else if(_event = "escape"){
@@ -215,5 +215,6 @@ class AutoBase_GuiClass{
 
 ;*** Label ***;
 AUTOBASE_Gui_Edit_Change:
+  ;TODO
   AUOTOBASE.search()
   return

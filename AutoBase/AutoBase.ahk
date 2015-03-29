@@ -12,6 +12,7 @@ return
 #include %A_ScriptDir%
 
 ; top
+#include Hotkey.ahk
 #include Class\AutoBase_Class.ahk
 
 ; for developer
@@ -24,6 +25,7 @@ return
 
 ; model
 #include Class\Model\AutoBase_GuiSettingClass.ahk
+#include Class\Model\AutoBase_KeyClass.ahk
 #include Class\Model\AutoBase_ListViewClass.ahk
 #include Class\Model\AutoBase_LoadPluginClass.ahk
 #include Class\Model\AutoBase_ModelClass.ahk
