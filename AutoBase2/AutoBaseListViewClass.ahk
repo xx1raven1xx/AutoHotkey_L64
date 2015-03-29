@@ -58,6 +58,11 @@ class AutoBaseListViewClass
     LV_Add("", str_)
   }
   
+  show()
+  {
+    Gui, Show
+  }
+  
   ; getter setter
 
 }

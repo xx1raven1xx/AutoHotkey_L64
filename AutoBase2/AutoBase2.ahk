@@ -13,6 +13,8 @@ SetWorkingDir, %A_ScriptDir%
 ABC := new AutoBaseClass()
 
 ABC.getListViewClass().addList("aaaaaa")
+ABC.getListViewClass().addList("bbbbbb")
+ABC.getListViewClass().show()
 
 OnMessage(0x4a, "Receive_WM_COPYDATA")  ; 0x4a is WM_COPYDATA
 
